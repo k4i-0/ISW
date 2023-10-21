@@ -11,6 +11,9 @@ const authRoutes = require("./auth.routes.js");
 /** Middleware de autenticación */
 const authenticationMiddleware = require("../middlewares/authentication.middleware.js");
 
+// de preguntas
+const preguntasRoutes = require("./preguntas.routes.js");
+
 /** Instancia del enrutador */
 const router = express.Router();
 
@@ -18,6 +21,8 @@ const router = express.Router();
 router.use("/users", authenticationMiddleware, userRoutes);
 // Define las rutas para la autenticación /api/auth
 router.use("/auth", authRoutes);
+//Define rutas preguntas examinador
+router.use("/question",preguntasRoutes);
 
 // Exporta el enrutador
 module.exports = router;

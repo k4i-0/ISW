@@ -10,7 +10,7 @@
     "node",
     "backend"
   ],
-  "author": "Grupo 8",
+  "author": "Grupo 8, template ayudantia-isw - github.com/ubiobio",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "2.4.3",
