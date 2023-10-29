@@ -20,7 +20,7 @@ router.use(authenticationMiddleware);
 //rutas
 router.get("/",authorizationMiddleware.isExaminador,preguntaController.getPreguntas);
 router.post("/",authorizationMiddleware.isExaminador,preguntaController.createPregunta);
-//router.delete("/:id",authorizationMiddleware.isExaminador,preguntaController.deletePregunta);
+router.delete("/:id",authorizationMiddleware.isExaminador,preguntaController.deletePregunta);
 router.put("/",authorizationMiddleware.isExaminador,preguntaController.updatePregunta);
 
 //exporto

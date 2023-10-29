@@ -2,7 +2,12 @@
 // Importa el modelo de datos 'User'
 const User = require("../models/user.model.js");
 const Role = require("../models/role.model.js");
+const Pauta = require("../models/pautas.models.js");
+const Prueba = require("../models/pruebas.model.js");
+const Pregunta = require("../models/preguntas.model.js");
 const { handleError } = require("../utils/errorHandler");
+const { object } = require("joi");
+const relacion = require("../models/tiene.model.js");
 
 /**
  * Obtiene todos los usuarios de la base de datos
@@ -129,10 +134,67 @@ async function deleteUser(id) {
   }
 }
 
+
+//funcion crea prueba y se la envia al usuario postulante, validar en index
+async function obtenerPrueba(id){
+  try {
+    const test = await Prueba.find();
+    const users = await User.find({email:id})
+    const ultimo = test.length-1
+    if(!test[ultimo].postulante){
+      await Prueba.updateOne({id:ultimo},{postulante:users[0]._id.toString()});
+      const buscar = await relacion.find({idPrueba:test[ultimo]._id.toString()});
+      const test2 = [];
+      for(let i=0;i<buscar.length;i++){
+        test2.push(await Pregunta.find({_id:buscar[i].idPregunta.toString()}))
+      }
+      //aleatoriza el array
+      test2.sort(function() { return Math.random() - 0.5 });
+      test2.push(await Prueba.find({_id:test[ultimo]._id.toString()}));
+      return test2;
+    }
+    return await Prueba.find({postulante:id});
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function corregirPrueba(resp){
+  try {
+    const prueba = await Prueba.findById(resp.id);
+    const busqueda = await relacion.find({idPrueba:prueba.id});
+    var validador = 0;
+    for(let i=0;i<resp.respuesta.length;i++){
+      for(let j=0;j<busqueda.length;j++){
+        if(resp.respuesta[i].id === busqueda[j].idPregunta){
+            var coreccion = await Pauta.find({id:busqueda[j].idPauta});
+            if(resp.respues[i].res !== coreccion.respuesta){
+              validador++
+            }
+        }
+      }
+    }  
+    if(validador > 0 ){
+      console.log("repobado");
+      await User.updateOne({_id:resp.id},{estadoPostulacion:"Aprobado Teorico"});
+      return ["reprobado"]
+    }else{
+      console.log("aprobado");
+      await User.updateOne({_id:resp.id},{estadoPostulacion:"Aprobado Teorico"})
+      return ["aprobado"]
+    }
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   getUsers,
   createUser,
   getUserById,
   updateUser,
   deleteUser,
+  corregirPrueba,
+  obtenerPrueba
 };

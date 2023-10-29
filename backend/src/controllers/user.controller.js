@@ -5,6 +5,7 @@ const { respondSuccess, respondError } = require("../utils/resHandler");
 const UserService = require("../services/user.service");
 const { userBodySchema, userIdSchema } = require("../schema/user.schema");
 const { handleError } = require("../utils/errorHandler");
+const Pregunta = require("../models/preguntas.model.js");
 
 /**
  * Obtiene todos los usuarios
@@ -124,10 +125,31 @@ async function deleteUser(req, res) {
   }
 }
 
+async function obtenerTest(req,res){
+  try {
+      const Test  =await UserService.obtenerPrueba(req.email);
+      respondSuccess(req,res,200,Test);
+  } catch (error) {
+      console.log(error);
+  }
+}
+
+async function corregirPrueba(req,res){
+  try {
+    const respuestas = req.body;
+    const pruebaC = await UserService.corregirPrueba(respuestas);
+    respondSuccess(req,res,200,pruebaC);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   getUsers,
   createUser,
   getUserById,
   updateUser,
   deleteUser,
+  obtenerTest,
+  corregirPrueba
 };

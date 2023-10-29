@@ -1,7 +1,9 @@
 "use strict";
 
 const question = require("../models/preguntas.model.js");
-const { findByIdAndUpdate } = require("../models/user.model.js");
+const pautas = require("../models/pautas.models.js");
+const relacion = require("../models/tiene.model.js");
+const Prueba = require("../models/pruebas.model.js");
 const { handleError } = require("../utils/errorHandler");
 
 
@@ -10,7 +12,8 @@ const { handleError } = require("../utils/errorHandler");
 async function getPreguntas(){
     try {
         const preguntas = await question.find();
-        return [preguntas,null];
+        const pautaVer = await pautas.find();
+        return [preguntas,pautaVer];
     } catch (error) {
         handleError(error, "preguntas.service -> trae");
     }
@@ -22,7 +25,8 @@ async function getPreguntas(){
 async function createPregunta(pre){
     try {
         const {pregunta,Alternativa} = pre;
-        //crear verificador de pregunta existente
+        const busquedapregunta = await question.findOne({pregunta: pregunta}).exec();
+        if(busquedapregunta) return 400
         const newquestion = new question({
             pregunta,
             Alternativa
@@ -34,16 +38,31 @@ async function createPregunta(pre){
     }
 }
 
+//crea una pauta
+async function createPauta(respuesta){
+    try {
+        const newpauta = new pautas({
+            respuesta
+        }).save();
+        return newpauta;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
 async function deletePregunta(id){
     try {
-        return await question.findByIdAndDelete(id);
+        const eliminarRelacion = await relacion.findByIdAndDelete(id);
+        const eliminarQuestion = await question.findByIdAndDelete(id);
+        return [eliminarQuestion]
     } catch (error) {
         console.log(error);
     }
 }
 async function updatePregunta(cambio){
     try {
-        const updateP = await question.findByIdAndUpdate(
+        const updatePregunta = await question.findByIdAndUpdate(
             cambio.id,
             {
                 pregunta : cambio.pregunta,
@@ -51,7 +70,46 @@ async function updatePregunta(cambio){
             },
             {new:true}
         );
-        return updateP;
+        const encontrarPauta = await relacion.find({idPregunta:cambio.id});
+        const updatePauta = await pautas.findByIdAndUpdate(
+            encontrarPauta.idPauta,
+            {
+                respuesta:cambio.respuesta
+            },
+            {new:true}
+        );
+        return [updatePregunta,updatePauta];
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function crearRelacion(idPregunta,idPauta,idPrueba){
+    try {
+       const crearRelacion = new relacion({
+        idPregunta,
+        idPauta,
+        idPrueba
+       }).save()
+       return crearRelacion;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function crearPrueba(){
+    try {
+        const Pruebas = await Prueba.find();
+        const ultimaPruebas = await relacion.find({idPrueba:Pruebas[Pruebas.length-1].id});
+        console.log(ultimaPruebas);
+        if(ultimaPruebas.length === 0 || ultimaPruebas.length >5){
+            const newPrueba= new Prueba({
+                estado:"creado",
+            }).save();
+            return newPrueba;  
+        }else{
+            return Pruebas[Pruebas.length-1];
+        }
     } catch (error) {
         console.log(error);
     }
@@ -61,5 +119,8 @@ module.exports={
     createPregunta,
     getPreguntas,
     deletePregunta,
-    updatePregunta
+    updatePregunta,
+    createPauta,
+    crearRelacion,
+    crearPrueba
 };
