@@ -19,11 +19,9 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    estadoPostulacion:[
-      {
+    estadoPostulacion:{
         type:String
-      }
-    ],
+    },
     roles: [
       {
         type: mongoose.Schema.Types.ObjectId,

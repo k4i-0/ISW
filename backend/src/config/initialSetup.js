@@ -41,7 +41,8 @@ async function createUsers() {
 
     const admin = await Role.findOne({ name: "admin" });
     const user = await Role.findOne({ name: "Postulante" });
-    const exam = await Role.findOne({name: "Examinador"})
+    const exam = await Role.findOne({name: "Examinador"});
+    const secre = await Role.findOne({name: "Secretaria"})
 
     await Promise.all([
       new User({
@@ -61,6 +62,12 @@ async function createUsers() {
         email: "exam@dominio.cl",
         password: await User.encryptPassword("exam123"),
         roles: exam._id,
+      }).save(),
+      new User({
+        username:"Secretaria",
+        email: "secre@dominio.cl",
+        password: await User.encryptPassword("exam123"),
+        roles: secre._id,
       }).save()
     ]);
     console.log("* => Users creados exitosamente");

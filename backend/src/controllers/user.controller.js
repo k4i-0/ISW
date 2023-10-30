@@ -127,7 +127,7 @@ async function deleteUser(req, res) {
 
 async function obtenerTest(req,res){
   try {
-      const Test  =await UserService.obtenerPrueba(req.email);
+      const Test = await UserService.obtenerPrueba(req.email);
       respondSuccess(req,res,200,Test);
   } catch (error) {
       console.log(error);

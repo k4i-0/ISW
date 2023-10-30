@@ -22,7 +22,7 @@ router.use("/users", authenticationMiddleware, userRoutes);
 // Define las rutas para la autenticación /api/auth
 router.use("/auth", authRoutes);
 //Define rutas preguntas examinador
-router.use("/examinador/question",preguntasRoutes);
+router.use("/examinador/question",authenticationMiddleware,preguntasRoutes);
 
 // Exporta el enrutador
 module.exports = router;

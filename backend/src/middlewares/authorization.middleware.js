@@ -54,7 +54,53 @@ async function isExaminador(req,res,next){
   }
 }
 
+//es postulante
+async function isPostulante(req,res,next){
+  try {
+    const user = await User.findOne({ email: req.email });
+    const roles = await Role.find({ _id: { $in: user.roles } });
+    for (let i = 0; i < roles.length; i++) {
+      if (roles[i].name === "Postulante") {
+        next();
+        return;
+      }
+    }
+    return respondError(
+      req,
+      res,
+      401,
+      "Se requiere un rol de Postulante para realizar esta acción",
+    );
+  } catch (error) {
+    console.log(error);    
+  }
+}
+
+//tiene doc listos
+async function darPruebateorica(req,res,next){
+  try {
+    const user = await User.findOne({ email: req.email });
+    if(user.estadoPostulacion === "Documentos Listos"){
+      next();
+      return;
+    }else{
+      return respondError(
+        req,
+        res,
+        401,
+        "No tiene sus documentos aprobados",
+      );
+    }
+  } catch (error) {
+    console.log(error);    
+  }
+}
+
+//funcion comprobar fecha en calendario
+
 module.exports = {
   isAdmin,
-  isExaminador
+  isExaminador,
+  isPostulante,
+  darPruebateorica
 };

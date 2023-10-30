@@ -138,22 +138,34 @@ async function deleteUser(id) {
 //funcion crea prueba y se la envia al usuario postulante, validar en index
 async function obtenerPrueba(id){
   try {
-    const test = await Prueba.find();
     const users = await User.find({email:id})
-    const ultimo = test.length-1
-    if(!test[ultimo].postulante){
-      await Prueba.updateOne({id:ultimo},{postulante:users[0]._id.toString()});
-      const buscar = await relacion.find({idPrueba:test[ultimo]._id.toString()});
+    const verificar = await Prueba.find({postulante:users[0]._id});
+    const test = await Prueba.find();
+    var ultimo
+    if(test.length === 0){
+      ultimo = test.length
+    }else{
+      ultimo = test.length-1
+    }
+
+    if(verificar.length === 0 ){
+      //asigna prueba a postulante
+      await Prueba.updateOne({_id:test[ultimo].id},{postulante:users[0].id});
+      const buscar = await relacion.find({idPrueba:test[ultimo].id});
+      //asigna pregunta al array test 2
       const test2 = [];
       for(let i=0;i<buscar.length;i++){
         test2.push(await Pregunta.find({_id:buscar[i].idPregunta.toString()}))
       }
       //aleatoriza el array
       test2.sort(function() { return Math.random() - 0.5 });
+      //agregar id prueba al array
       test2.push(await Prueba.find({_id:test[ultimo]._id.toString()}));
       return test2;
     }
-    return await Prueba.find({postulante:id});
+    //retorna en caso que si exista
+    //mostrar la preguntas de la prueba con una funcion
+    return verificar;
   } catch (error) {
     console.log(error);
   }
@@ -167,8 +179,8 @@ async function corregirPrueba(resp){
     for(let i=0;i<resp.respuesta.length;i++){
       for(let j=0;j<busqueda.length;j++){
         if(resp.respuesta[i].id === busqueda[j].idPregunta){
-            var coreccion = await Pauta.find({id:busqueda[j].idPauta});
-            if(resp.respues[i].res !== coreccion.respuesta){
+            var coreccion = await Pauta.find({id:busqueda[j].isPauta});
+            if(resp.respues[i].res !== coreccion[0].respuesta){
               validador++
             }
         }

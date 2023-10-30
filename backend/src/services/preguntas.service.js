@@ -50,10 +50,48 @@ async function createPauta(respuesta){
     }
 }
 
+async function crearPrueba(){
+    try {
+        const Pruebas = await Prueba.find();
+        var ultimaPruebas = null;
+        if(Pruebas[Pruebas.length-1] !== undefined){
+            ultimaPruebas = await relacion.find({idPrueba:Pruebas[Pruebas.length-1].id.toString()});
+        }else{
+            ultimaPruebas = 0
+        }
+        if(ultimaPruebas === 0 || ultimaPruebas.length >5){
+            console.log("entre");
+            const newPrueba= new Prueba({
+                estado:"creado",
+            }).save();
+            return newPrueba;  
+        }else{
+            return Pruebas[Pruebas.length-1];
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function crearRelacion(idPregunta,isPauta,idPrueba){
+    try {
+       const crearRelacion = new relacion({
+        idPregunta,
+        isPauta,
+        idPrueba
+       }).save()
+       return crearRelacion;
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 async function deletePregunta(id){
     try {
-        const eliminarRelacion = await relacion.findByIdAndDelete(id);
+
+        const temp = await relacion.find({idPregunta:id});
+        const eliminarPauta = await pautas.findByIdAndDelete(temp[0].isPauta);
+        const eliminarRelacion = await relacion.findByIdAndDelete(temp[0]._id);
         const eliminarQuestion = await question.findByIdAndDelete(id);
         return [eliminarQuestion]
     } catch (error) {
@@ -84,36 +122,6 @@ async function updatePregunta(cambio){
     }
 }
 
-async function crearRelacion(idPregunta,idPauta,idPrueba){
-    try {
-       const crearRelacion = new relacion({
-        idPregunta,
-        idPauta,
-        idPrueba
-       }).save()
-       return crearRelacion;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-async function crearPrueba(){
-    try {
-        const Pruebas = await Prueba.find();
-        const ultimaPruebas = await relacion.find({idPrueba:Pruebas[Pruebas.length-1].id});
-        console.log(ultimaPruebas);
-        if(ultimaPruebas.length === 0 || ultimaPruebas.length >5){
-            const newPrueba= new Prueba({
-                estado:"creado",
-            }).save();
-            return newPrueba;  
-        }else{
-            return Pruebas[Pruebas.length-1];
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
 
 module.exports={
     createPregunta,

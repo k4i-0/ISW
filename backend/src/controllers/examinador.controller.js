@@ -21,8 +21,8 @@ async function createPregunta(req,res){
         const newpauta = await QuestionService.createPauta(body.respuesta);
         if(newpauta === 400) return res.status(200).send("pauta ya existe");
         const newPrueba = await QuestionService.crearPrueba(req.email);
-        //console.log(newPrueba);
-        await QuestionService.crearRelacion(newPregunta.id,newpauta.id,newPrueba.id);
+        console.log(newpauta._id);
+        await QuestionService.crearRelacion(newPregunta._id,newpauta._id,newPrueba._id);
         return res.status(200).send([newPregunta,newpauta,newPrueba]);
 
     } catch (error) {
@@ -33,9 +33,9 @@ async function createPregunta(req,res){
 async function deletePregunta(req,res){
     try {
         const {params} = req;
-        console.log(params.id)
+        //console.log(params.id)
         const preguntaDelete = await QuestionService.deletePregunta(params.id);
-        return res.status(204).send(preguntaDelete);
+        return res.status(200).send("Eliminada con exito");
     } catch (error) {
         console.log(error);
     }
