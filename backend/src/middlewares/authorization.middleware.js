@@ -97,10 +97,53 @@ async function darPruebateorica(req,res,next){
 }
 
 //funcion comprobar fecha en calendario
+async function eslaFecha(req,res,next){
+  try {
+    const user = await User.findOne({ email: req.email });
+    const fecha = await Calendario.find({user:user.id});
+    const hoy = new Date()
+    if(hot.toISOString() === fecha.fechaA){
+      next();
+      return;
+    }else{
+      return respondError(
+        req,
+        res,
+        401,
+        "Aun no puedes dar el test",
+      );
+    }
+  } catch (error) {
+    console.log(error);    
+  }
+}
+
+
+async function dioPruebaTeorica(req,res,next){
+  try {
+    const user = await User.findOne({ email: req.email });
+    console.log(user.estadoPostulacion)
+    if(user.estadoPostulacion !== "Aprobado Teorico"){
+      next();
+      return;
+    }else{
+      return respondError(
+        req,
+        res,
+        401,
+        "Usted ya aprobo esta prueba",
+      );
+    }
+  } catch (error) {
+    console.log(error);    
+  }
+}
 
 module.exports = {
   isAdmin,
   isExaminador,
   isPostulante,
-  darPruebateorica
+  darPruebateorica,
+  eslaFecha,
+  dioPruebaTeorica
 };

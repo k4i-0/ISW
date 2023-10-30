@@ -151,21 +151,19 @@ async function obtenerPrueba(id){
     if(verificar.length === 0 ){
       //asigna prueba a postulante
       await Prueba.updateOne({_id:test[ultimo].id},{postulante:users[0].id});
-      const buscar = await relacion.find({idPrueba:test[ultimo].id});
-      //asigna pregunta al array test 2
-      const test2 = [];
-      for(let i=0;i<buscar.length;i++){
-        test2.push(await Pregunta.find({_id:buscar[i].idPregunta.toString()}))
-      }
-      //aleatoriza el array
-      test2.sort(function() { return Math.random() - 0.5 });
-      //agregar id prueba al array
-      test2.push(await Prueba.find({_id:test[ultimo]._id.toString()}));
-      return test2;
     }
-    //retorna en caso que si exista
-    //mostrar la preguntas de la prueba con una funcion
-    return verificar;
+    const buscar = await relacion.find({idPrueba:test[ultimo].id});
+    //asigna pregunta al array test 2
+    const test2 = [];
+    for(let i=0;i<buscar.length;i++){
+      test2.push(await Pregunta.find({_id:buscar[i].idPregunta.toString()}))
+    }
+    //aleatoriza el array
+    test2.sort(function() { return Math.random() - 0.5 });
+    //agregar id prueba al array
+    test2.push(await Prueba.find({_id:test[ultimo]._id.toString()}));
+    return test2;
+
   } catch (error) {
     console.log(error);
   }
@@ -178,21 +176,23 @@ async function corregirPrueba(resp){
     var validador = 0;
     for(let i=0;i<resp.respuesta.length;i++){
       for(let j=0;j<busqueda.length;j++){
-        if(resp.respuesta[i].id === busqueda[j].idPregunta){
-            var coreccion = await Pauta.find({id:busqueda[j].isPauta});
-            if(resp.respues[i].res !== coreccion[0].respuesta){
+        if(resp.respuesta[i].id === busqueda[j].idPregunta.toString()){
+            var coreccion = await Pauta.find({_id:busqueda[j].isPauta.toString()});
+            if(resp.respuesta[i].res !== coreccion[0].respuesta){
               validador++
             }
         }
       }
-    }  
+    } 
     if(validador > 0 ){
       console.log("repobado");
-      await User.updateOne({_id:resp.id},{estadoPostulacion:"Aprobado Teorico"});
+      const prueba = await Prueba.findOne({_id:resp.id});
+      await User.updateOne({_id:prueba.postulante.toString()},{estadoPostulacion:"reprobado Teorico"});
       return ["reprobado"]
     }else{
       console.log("aprobado");
-      await User.updateOne({_id:resp.id},{estadoPostulacion:"Aprobado Teorico"})
+      const prueba = await Prueba.findOne({_id:resp.id});
+      await User.updateOne({_id:prueba.postulante.toString()},{estadoPostulacion:"Aprobado Teorico"});
       return ["aprobado"]
     }
 

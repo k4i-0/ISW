@@ -137,6 +137,7 @@ async function obtenerTest(req,res){
 async function corregirPrueba(req,res){
   try {
     const respuestas = req.body;
+    //crear un contador de intentos
     const pruebaC = await UserService.corregirPrueba(respuestas);
     respondSuccess(req,res,200,pruebaC);
   } catch (error) {
