@@ -172,6 +172,9 @@ async function obtenerPrueba(id){
 async function corregirPrueba(resp){
   try {
     const prueba = await Prueba.findById(resp.id);
+    if(prueba === null){
+      return "No exite prueba o ingreso mal los datos"
+    }
     const busqueda = await relacion.find({idPrueba:prueba.id});
     var validador = 0;
     for(let i=0;i<resp.respuesta.length;i++){
