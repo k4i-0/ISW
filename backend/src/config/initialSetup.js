@@ -19,8 +19,8 @@ async function createRoles() {
     await Promise.all([
       new Role({ name: "Postulante" }).save(),
       new Role({ name: "admin" }).save(),
-      new Role({name: "Examinador"}).save(),
-      new Role({name: "Secretaria"}).save()
+      new Role({ name: "Examinador" }).save(),
+      new Role({ name: "Secretaria" }).save(),
     ]);
     console.log("* => Roles creados exitosamente");
   } catch (error) {
@@ -41,8 +41,8 @@ async function createUsers() {
 
     const admin = await Role.findOne({ name: "admin" });
     const user = await Role.findOne({ name: "Postulante" });
-    const exam = await Role.findOne({name: "Examinador"});
-    const secre = await Role.findOne({name: "Secretaria"})
+    const exam = await Role.findOne({ name: "Examinador" });
+    const secre = await Role.findOne({ name: "Secretaria" });
 
     await Promise.all([
       new User({
@@ -58,17 +58,17 @@ async function createUsers() {
         roles: admin._id,
       }).save(),
       new User({
-        username:"Examinador",
+        username: "Examinador",
         email: "exam@dominio.cl",
         password: await User.encryptPassword("exam123"),
-        roles: exam._id,
+        roles: exam._id, 
       }).save(),
       new User({
-        username:"Secretaria",
+        username: "Secretaria",
         email: "secre@dominio.cl",
         password: await User.encryptPassword("exam123"),
         roles: secre._id,
-      }).save()
+      }).save(),
     ]);
     console.log("* => Users creados exitosamente");
   } catch (error) {

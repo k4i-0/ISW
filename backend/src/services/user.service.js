@@ -136,9 +136,9 @@ async function deleteUser(id) {
 
 
 //funcion crea prueba y se la envia al usuario postulante, validar en index
-async function obtenerPrueba(id){
+async function obtenerPrueba(id) {
   try {
-    const users = await User.find({email:id})
+    const users = await User.find({ email:id })
     const verificar = await Prueba.find({postulante:users[0]._id});
     const test = await Prueba.find();
     var ultimo

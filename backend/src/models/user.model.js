@@ -19,8 +19,8 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    estadoPostulacion:{
-        type:String
+    estadoPostulacion: {
+        type: String,
     },
     roles: [
       {

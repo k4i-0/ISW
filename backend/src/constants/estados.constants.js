@@ -1,3 +1,3 @@
-const ESTADOS = ["creado","aprobado","reprobado"];
+const ESTADOS = ["creado", "aprobado", "reprobado"];
 
 module.exports = ESTADOS;
