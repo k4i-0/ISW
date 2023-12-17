@@ -4,12 +4,10 @@ import jwtDecode from 'jwt-decode';
 
 export const login = async ({ email, password }) => {
   try {
-    console.log(email);
     const response = await axios.post('auth/login', {
       email,
       password,
     });
-    console.log(email);
     const { status, data } = response;
     if (status === 200) {
       const { email, roles } = await jwtDecode(data.data.accessToken);
@@ -19,7 +17,6 @@ export const login = async ({ email, password }) => {
       ] = `Bearer ${data.data.accessToken}`;
       cookies.set('jwt-auth', data.data.accessToken, { path: '/' });
     }
-    console.log(email)
   } catch (error) {
     console.log(error);
   }

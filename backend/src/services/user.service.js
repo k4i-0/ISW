@@ -6,7 +6,7 @@ const Pauta = require("../models/pautas.models.js");
 const Prueba = require("../models/pruebas.model.js");
 const Pregunta = require("../models/preguntas.model.js");
 const { handleError } = require("../utils/errorHandler");
-const { object } = require("joi");
+// const { object } = require("joi");
 const relacion = require("../models/tiene.model.js");
 
 /**
@@ -134,71 +134,81 @@ async function deleteUser(id) {
   }
 }
 
-
-//funcion crea prueba y se la envia al usuario postulante, validar en index
-async function obtenerPrueba(id) {
+/**
+ * Crea una prueba y se la envia al postulante
+ * @param {string} id correo usuario
+ * @returns {Promise} Promesa 
+ */
+async function obtenerPrueba( id ) {
   try {
-    const users = await User.find({ email:id })
-    const verificar = await Prueba.find({postulante:users[0]._id});
+    const users = await User.find({ email: id });
+    const verificar = await Prueba.find({ postulante: users[0]._id });
     const test = await Prueba.find();
-    var ultimo
-    if(test.length === 0){
-      ultimo = test.length
-    }else{
-      ultimo = test.length-1
+    let ultimo;
+    if ( test.length === 0 ) {
+      ultimo = test.length;
+    } else {
+      ultimo = test.length-1;
     }
-
-    if(verificar.length === 0 ){
-      //asigna prueba a postulante
-      await Prueba.updateOne({_id:test[ultimo].id},{postulante:users[0].id});
+    if ( verificar.length === 0 ) {
+     // asigna prueba a postulante
+    await Prueba.updateOne({ _id: test[ultimo].id }, { postulante: users[0].id });
     }
-    const buscar = await relacion.find({idPrueba:test[ultimo].id});
-    //asigna pregunta al array test 2
+    const buscar = await relacion.find({ idPrueba: test[ultimo].id });
+    // asigna pregunta al array test 2
     const test2 = [];
-    for(let i=0;i<buscar.length;i++){
-      test2.push(await Pregunta.find({_id:buscar[i].idPregunta.toString()}))
+    for ( let i=0; i<buscar.length; i++ ) {
+      const aux = await Pregunta.find({ _id: buscar[i].idPregunta.toString() });
+      test2.push( aux[0] );
     }
-    //aleatoriza el array
-    test2.sort(function() { return Math.random() - 0.5 });
-    //agregar id prueba al array
-    test2.push(await Prueba.find({_id:test[ultimo]._id.toString()}));
+    // aleatoriza el array
+    // test2.sort(function() { return Math.random() - 0.5 });
+    // agregar id prueba al array
+    const aux1 = await Prueba.find({ _id: test[ultimo]._id.toString() });
+    test2.push(aux1[0]);
     return test2;
-
   } catch (error) {
     console.log(error);
   }
 }
-
-async function corregirPrueba(resp){
+/**
+ * Corrige Prueba enviada por el usuario
+ * @param {string} resp la respuesta
+ * @returns {Promise} Promesa
+ */
+async function corregirPrueba( resp ) {
   try {
-    const prueba = await Prueba.findById(resp.id);
-    if(prueba === null){
-      return "No exite prueba o ingreso mal los datos"
+    const prueba = await Prueba.findById( resp.id );
+    if ( prueba === null ) {
+      return "No exite prueba o ingreso mal los datos";
     }
-    const busqueda = await relacion.find({idPrueba:prueba.id});
-    var validador = 0;
-    for(let i=0;i<resp.respuesta.length;i++){
-      for(let j=0;j<busqueda.length;j++){
-        if(resp.respuesta[i].id === busqueda[j].idPregunta.toString()){
-            var coreccion = await Pauta.find({_id:busqueda[j].isPauta.toString()});
-            if(resp.respuesta[i].res !== coreccion[0].respuesta){
-              validador++
+    const busqueda = await relacion.find({ idPrueba: prueba.id });
+    let validador = 0;
+    for ( let i=0; i<resp.respuesta.length; i++ ) {
+      for ( let j=0; j<busqueda.length; j++ ) {
+        if ( resp.respuesta[i].id === busqueda[j].idPregunta.toString() ) {
+            const coreccion = await Pauta.find({ _id: busqueda[j].isPauta.toString() } );
+            if ( resp.respuesta[i].res !== coreccion[0].respuesta ) {
+              validador++;
             }
         }
       }
     } 
-    if(validador > 0 ){
-      console.log("repobado");
-      const prueba = await Prueba.findOne({_id:resp.id});
-      await User.updateOne({_id:prueba.postulante.toString()},{estadoPostulacion:"reprobado Teorico"});
-      return ["reprobado"]
-    }else{
-      console.log("aprobado");
-      const prueba = await Prueba.findOne({_id:resp.id});
-      await User.updateOne({_id:prueba.postulante.toString()},{estadoPostulacion:"Aprobado Teorico"});
-      return ["aprobado"]
-    }
+    if (validador > 0 ) {
+      const prueba = await Prueba.findOne({ _id: resp.id });
 
+      await User.updateOne({ _id: prueba.postulante.toString() }, 
+      { estadoPostulacion: "reprobado Teorico" });
+
+      return ["reprobado"];
+    } else {
+      const prueba = await Prueba.findOne({ _id: resp.id });
+
+      await User.updateOne({ _id: prueba.postulante.toString() }, 
+      { estadoPostulacion: "Aprobado Teorico" });
+
+      return ["aprobado"];
+    }
   } catch (error) {
     console.log(error);
   }
@@ -211,5 +221,5 @@ module.exports = {
   updateUser,
   deleteUser,
   corregirPrueba,
-  obtenerPrueba
+  obtenerPrueba,
 };

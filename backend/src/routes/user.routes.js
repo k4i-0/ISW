@@ -21,7 +21,11 @@ router.use(authenticationMiddleware);
 router.get("/", usuarioController.getUsers);
 router.post("/", authorizationMiddleware.isAdmin, usuarioController.createUser);
 router.get("/:id", usuarioController.getUserById);
-router.post("/teorico/miprueba", authorizationMiddleware.isPostulante, authorizationMiddleware.dioPruebaTeorica, usuarioController.corregirPrueba);
+router.post(
+  "/teorico/miprueba", authorizationMiddleware.isPostulante, 
+  authorizationMiddleware.dioPruebaTeorica, 
+  usuarioController.corregirPrueba,
+);
 router.get("/teorico/prueba", authorizationMiddleware.isPostulante, usuarioController.obtenerTest);
 router.put(
   "/:id",

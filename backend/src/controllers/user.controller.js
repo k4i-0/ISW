@@ -5,7 +5,7 @@ const { respondSuccess, respondError } = require("../utils/resHandler");
 const UserService = require("../services/user.service");
 const { userBodySchema, userIdSchema } = require("../schema/user.schema");
 const { handleError } = require("../utils/errorHandler");
-const Pregunta = require("../models/preguntas.model.js");
+// const Pregunta = require("../models/preguntas.model.js");
 
 /**
  * Obtiene todos los usuarios
@@ -134,12 +134,12 @@ async function obtenerTest(req, res) {
   }
 }
 
-async function corregirPrueba(req,res){
+async function corregirPrueba(req, res) {
   try {
     const respuestas = req.body;
-    //crear un contador de intentos
+    // crear un contador de intentos
     const pruebaC = await UserService.corregirPrueba(respuestas);
-    respondSuccess(req,res,200,pruebaC);
+    respondSuccess(req, res, 200, pruebaC);
   } catch (error) {
     console.log(error);
   }
@@ -152,5 +152,5 @@ module.exports = {
   updateUser,
   deleteUser,
   obtenerTest,
-  corregirPrueba
+  corregirPrueba,
 };

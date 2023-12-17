@@ -24,13 +24,15 @@ function LoginForm() {
         type="email"
         {...register('email', { required: true })}
       />
+      <br/>
       <input
         type="password"
         name="password"
         {...register('password', { required: true })}
       />
       {errors.exampleRequired && <span>This field is required</span>}
-      <input type="submit" />
+      <br />
+      <input type="submit" value="Ingresar" />
     </form>
   );
 }

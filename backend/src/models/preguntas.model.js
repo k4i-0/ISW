@@ -2,19 +2,23 @@
 
 const mongoose = require("mongoose");
 
-//crea esquema de preguntas
+// crea esquema de preguntas
 const questionSchema = new mongoose.Schema({
-    pregunta:{
-        type:String,
+    pregunta: {
+        type: String,
         required: true,
     },
-    Alternativa:{
+    Alternativa: {
         type: Array,
         length: 4,
         required: true,
-    }
+    },
+    respuesta: {
+        type: Array,
+        require: true,
+    },
 });
 
-const preguntas = mongoose.model("preguntas",questionSchema);
+const preguntas = mongoose.model("preguntas", questionSchema);
 
 module.exports= preguntas;

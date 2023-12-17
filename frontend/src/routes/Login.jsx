@@ -15,7 +15,7 @@ function Login() {
 
   return (
     <div>
-      <h2>Inicia sesion!</h2>
+      <img src="" alt="Icono"/>
       <LoginForm />
     </div>
   );

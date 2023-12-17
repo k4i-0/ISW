@@ -5,15 +5,15 @@ const pautas = require("../models/pautas.models.js");
 const relacion = require("../models/tiene.model.js");
 const Prueba = require("../models/pruebas.model.js");
 const { handleError } = require("../utils/errorHandler");
+// const relacion = require("../models/tiene.model.js");
 
 
-//funcion que devuelve las todas las preguntas de la base de datos
+// funcion que devuelve las todas las preguntas de la base de datos
 
-async function getPreguntas(){
+async function getPreguntas() {
     try {
         const preguntas = await question.find();
-        const pautaVer = await pautas.find();
-        return [preguntas,pautaVer];
+        return preguntas;
     } catch (error) {
         handleError(error, "preguntas.service -> trae");
     }
@@ -22,14 +22,15 @@ async function getPreguntas(){
 
 // funcion que crea una preguntas 
 
-async function createPregunta(pre){
+async function createPregunta(pre) {
     try {
-        const {pregunta,Alternativa} = pre;
-        const busquedapregunta = await question.findOne({pregunta: pregunta}).exec();
-        if(busquedapregunta) return 400
-        const newquestion = new question({
+        const { pregunta, Alternativa , respuesta} = pre;
+        const busquedapregunta = await question.findOne({ pregunta: pregunta }).exec();
+        if (busquedapregunta) return 400;
+        const newquestion = new question( {
             pregunta,
-            Alternativa
+            Alternativa,
+            respuesta,
         }).save();
 
         return newquestion;
@@ -38,6 +39,7 @@ async function createPregunta(pre){
     }
 }
 
+/*
 //crea una pauta
 async function createPauta(respuesta){
     try {
@@ -49,23 +51,24 @@ async function createPauta(respuesta){
         console.log(error);
     }
 }
+*/
 
-async function crearPrueba(){
+async function crearPrueba() {
     try {
         const Pruebas = await Prueba.find();
-        var ultimaPruebas = null;
-        if(Pruebas[Pruebas.length-1] !== undefined){
-            ultimaPruebas = await relacion.find({idPrueba:Pruebas[Pruebas.length-1].id.toString()});
-        }else{
-            ultimaPruebas = 0
+        let ultimaPruebas = null;
+        if ( Pruebas[Pruebas.length-1] !== undefined ) {
+            ultimaPruebas = await relacion.find(
+                { idPrueba: Pruebas[Pruebas.length-1].id.toString() });
+        } else {
+            ultimaPruebas = 0;
         }
-        if(ultimaPruebas === 0 || ultimaPruebas.length >5){
-            console.log("entre");
-            const newPrueba= new Prueba({
-                estado:"creado",
+        if ( ultimaPruebas === 0 || ultimaPruebas.length >5 ) {
+            const newPrueba = new Prueba({
+                estado: "creado",
             }).save();
             return newPrueba;  
-        }else{
+        } else {
             return Pruebas[Pruebas.length-1];
         }
     } catch (error) {
@@ -73,13 +76,12 @@ async function crearPrueba(){
     }
 }
 
-async function crearRelacion(idPregunta,isPauta,idPrueba){
+async function crearRelacion(idPregunta, idPrueba) {
     try {
        const crearRelacion = new relacion({
         idPregunta,
-        isPauta,
-        idPrueba
-       }).save()
+        idPrueba,
+       }).save();
        return crearRelacion;
     } catch (error) {
         console.log(error);
@@ -98,25 +100,32 @@ async function deletePregunta(id){
         console.log(error);
     }
 }
-async function updatePregunta(cambio){
+async function updatePregunta(cambio) {
     try {
+        // comprobar si la respuesta esta en la alternativas
+        for ( let i=0; i<4; i++) {
+            if (cambio.Alternativa[i] != cambio.respuesta) {
+                return "Respuesta no encontrada en alternativas";
+            }
+        }
         const updatePregunta = await question.findByIdAndUpdate(
             cambio.id,
             {
-                pregunta : cambio.pregunta,
-                Alternativa: cambio.Alternativa
+                pregunta: cambio.pregunta,
+                Alternativa: cambio.Alternativa,
+                respuesta: cambio.respuesta,
             },
-            {new:true}
+            { new: true },
         );
-        const encontrarPauta = await relacion.find({idPregunta:cambio.id});
+        /* const encontrarPauta = await relacion.find({ idPregunta: cambio.id });
         const updatePauta = await pautas.findByIdAndUpdate(
             encontrarPauta.idPauta,
             {
-                respuesta:cambio.respuesta
+                respuesta: cambio.respuesta,
             },
-            {new:true}
-        );
-        return [updatePregunta,updatePauta];
+            { new: true },
+        );*/
+        return updatePregunta;
     } catch (error) {
         console.log(error);
     }
@@ -128,7 +137,6 @@ module.exports={
     getPreguntas,
     deletePregunta,
     updatePregunta,
-    createPauta,
     crearRelacion,
-    crearPrueba
+    crearPrueba,
 };

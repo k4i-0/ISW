@@ -2,22 +2,18 @@
 
 const mongoose = require("mongoose");
 
-//crea esquema de preguntas
+// crea esquema de preguntas
 const tieneSchema = new mongoose.Schema({
-    idPregunta:{
-        type:mongoose.ObjectId,
-        ref: "preguntas"
-    },
-    isPauta:{
+    idPregunta: {
         type: mongoose.ObjectId,
-        ref:"pautas"
+        ref: "preguntas",
     },
-    idPrueba:{
-        type:mongoose.ObjectId,
-        ref:"pruebas"
-    }
+    idPrueba: {
+        type: mongoose.ObjectId,
+        ref: "pruebas",
+    },
 });
 
-const relacion = mongoose.model("tiene",tieneSchema);
+const relacion = mongoose.model("tiene", tieneSchema);
 
 module.exports= relacion;
