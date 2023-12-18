@@ -50,6 +50,15 @@ async function getPreguntas(req, res) {
     }
 }
 
+async function getPruebas(req, res) {
+    try {
+        const Pruebas = await QuestionService.getPruebas();
+        return res.status( 200 ).send(Pruebas);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 async function updatePregunta(req, res) {
     try {
         const cambio= req.body;
@@ -66,4 +75,5 @@ module.exports = {
     deletePregunta,
     getPreguntas,
     updatePregunta,
+    getPruebas,
 };

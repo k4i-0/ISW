@@ -4,11 +4,12 @@ import cookies from "js-cookie";
 import axios from "../services/root.service";
 import { useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import '../index.css'
 
 async function actualizarPregunta(data){
     const datos = JSON.stringify(data);
-    const res = await axios.put('/examinador/question',datos);
-    alert(res.data);
+    const res = await axios.put('/examinador/question',datos).finally();
+    //alert(res.data);
     return res;
 }
 
@@ -22,17 +23,34 @@ export default function actualizarPrueba(props) {
     const {handleSubmit,register} = useForm();
     
     const onSubmit1 = (data) => {
-        console.log('Data:', data);
+        console.log('Data:', datos._id);
+        if(data.pregunta == ""){
+            data.pregunta = location.state.pregunta
+            console.log(data.pregunta);
+        }
+        for (let i = 0; i<4; i++) {
+            if(data.Alternativa[i] == ""){
+                data.Alternativa[i] = location.state.Alternativa[i]
+                console.log(data.Alternativa[i]);
+            }
+        }
+        if(data.respuesta == ""){
+            data.respuesta = location.state.respuesta
+            console.log(data.respuesta);
+        }
+        data.id = datos._id
         actualizarPregunta(data).then(() => {
             console.log(data);
+            navigate('/crear-prueba');
         });
+        
     };
     return(
         <>
             <h1>Formulario Actualizacion</h1>
             <br />
-                <div>
-                <form onSubmit={handleSubmit(onSubmit1)}>
+                <div className='container2'>
+                <form className="crear-pregunta" onSubmit={handleSubmit(onSubmit1)}>
                     <label>Pregunta</label>
                     <br />
                     <input type="text" name='pregunta' placeholder={location.state.pregunta} {...register('pregunta')}/>
@@ -51,7 +69,7 @@ export default function actualizarPrueba(props) {
                     <br />
                     <input type="text" name="respuesta"  placeholder={location.state.respuesta} {...register('respuesta')} />
                     <br />
-                    <input type="submit" value="Enviar" onClick={navigate('/crea-prueba')} />
+                    <input type="submit" value="Enviar" />
                 </form>
                 </div>
             <br />

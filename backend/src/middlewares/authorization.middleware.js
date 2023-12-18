@@ -122,8 +122,8 @@ async function eslaFecha(req,res,next){
 async function dioPruebaTeorica(req,res,next){
   try {
     const user = await User.findOne({ email: req.email });
-    console.log(user.estadoPostulacion)
-    if(user.estadoPostulacion !== "Aprobado Teorico"){
+    console.log(user.estadoPostulacion);
+    if (user.estadoPostulacion !== "Aprobado Teorico") {
       next();
       return;
     }else{

@@ -2,7 +2,7 @@
 // Importa el modelo de datos 'User'
 const User = require("../models/user.model.js");
 const Role = require("../models/role.model.js");
-const Pauta = require("../models/pautas.models.js");
+// const Pauta = require("../models/pautas.models.js");
 const Prueba = require("../models/pruebas.model.js");
 const Pregunta = require("../models/preguntas.model.js");
 const { handleError } = require("../utils/errorHandler");
@@ -62,16 +62,14 @@ async function createUser(user) {
  * @param {string} Id del usuario
  * @returns {Promise} Promesa con el objeto de usuario
  */
-async function getUserById(id) {
+async function getUserById(correo) {
   try {
-    const user = await User.findById({ _id: id })
-      .select("-password")
-      .populate("roles")
+    const user = await User.find({ email: correo })
       .exec();
 
     if (!user) return [null, "El usuario no existe"];
 
-    return [user, null];
+    return [user[0], null];
   } catch (error) {
     handleError(error, "user.service -> getUserById");
   }
@@ -164,8 +162,8 @@ async function obtenerPrueba( id ) {
     // aleatoriza el array
     // test2.sort(function() { return Math.random() - 0.5 });
     // agregar id prueba al array
-    const aux1 = await Prueba.find({ _id: test[ultimo]._id.toString() });
-    test2.push(aux1[0]);
+    // const aux1 = await Prueba.find({ _id: test[ultimo]._id.toString() });
+    // test2.push(aux1[0]);
     return test2;
   } catch (error) {
     console.log(error);
@@ -176,8 +174,45 @@ async function obtenerPrueba( id ) {
  * @param {string} resp la respuesta
  * @returns {Promise} Promesa
  */
-async function corregirPrueba( resp ) {
+async function corregirPrueba( correo, res) {
   try {
+    // console.log(correo);
+    const userT = await User.find({ email: correo });
+    // console.log(userT);
+    const pruebasT = await Prueba.find({ postulante: userT[0]._id });
+    // console.log(pruebasT);
+    const preguntasT = await Pregunta.find();
+    // console.log(preguntasT);
+    const relacionT = await relacion.find({ idPrueba: pruebasT[0]._id });
+    // console.log(relacionT);
+    const arrayCorreccion = [];
+    for ( let i =0; i< relacionT.length; i++ ) {
+      for (let j =0; j<preguntasT.length; j++) {
+        if (relacionT[i].idPregunta.toString() == preguntasT[j]._id.toString()) {
+          arrayCorreccion.push(preguntasT[j].respuesta);
+        }
+      }
+    }
+    let eva = 0;
+    for (let i=0; i<res.length; i++) {
+      for (let j=0; j<arrayCorreccion.length; j++) {
+        if (arrayCorreccion[j][0]=== res[i][0]) {
+          eva++;
+        }
+      }
+    }
+
+    if (eva == res.length) {
+       await User.updateOne({ _id: userT[0]._id}, 
+        { estadoPostulacion: "Aprobado Teorico" });
+        return ["Aprobado"];
+    } else {
+      await User.updateOne({ _id: userT[0]._id}, 
+        { estadoPostulacion: "reprobado Teorico" });
+        return "Reprobado";
+    }
+
+    /*
     const prueba = await Prueba.findById( resp.id );
     if ( prueba === null ) {
       return "No exite prueba o ingreso mal los datos";
@@ -209,6 +244,7 @@ async function corregirPrueba( resp ) {
 
       return ["aprobado"];
     }
+    */
   } catch (error) {
     console.log(error);
   }

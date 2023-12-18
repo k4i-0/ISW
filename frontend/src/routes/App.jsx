@@ -1,33 +1,41 @@
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import '../index.css';
 
-
+// <Button variant="contained2" onClick={() => navigate('/vista-prueba')}>Ver Prueba</Button>
 
 function App() {
-  const user = useAuth();
+  const usuario = useAuth().user;
   const navigate = useNavigate();
-  console.log(user);
-
-  if(user.user.roles[0].name == 'Examinador'){
+  if(usuario.roles[0].name == 'Examinador'){
     const navigate = useNavigate();
 
     return(
       <>
-        <h1>Bienviendido {user.user.roles[0].name} </h1>
-        <button onClick={()=>navigate('/vista-prueba')}>Ver Prueba</button>
-        <button onClick={()=>navigate('/crear-prueba')}>Crear Prueba</button>
-
+       <div className="container2">
+          <h1>Bienviendido {usuario.roles[0].name}</h1>
+          <div className="buttons-container">
+            <Button variant="contained2" onClick={() => navigate('/crear-prueba')}>
+              Crear Prueba
+            </Button>
+          </div>
+        </div>
       </>
     );
   }
-  if(user.user.roles[0].name == 'Postulante'){
-    return(
-      <>
-      <h1>Bienvenido {user.user.roles[0].name}</h1>
-      <button onClick={() =>navigate('/prueba')}>Rendir Prueba</button>
-
-      </>
-    );
+  if(usuario.roles[0].name == 'Postulante'){
+        return(
+          <>
+            <div className="container2">
+              <h2>Bienvenido {usuario.roles[0].name}</h2>
+              <div className="buttons-container">
+                <Button  variant="contained2" onClick={() =>navigate('/prueba')}>Rendir Prueba</Button>
+              </div>
+            </div>
+    
+          </>
+        );
   }
 }
 

@@ -59,10 +59,10 @@ async function createUser(req, res) {
 async function getUserById(req, res) {
   try {
     const { params } = req;
-    const { error: paramsError } = userIdSchema.validate(params);
-    if (paramsError) return respondError(req, res, 400, paramsError.message);
+    // const { error: paramsError } = userIdSchema.validate(params);
+    // if (paramsError) return respondError(req, res, 400, paramsError.message);
 
-    const [user, errorUser] = await UserService.getUserById(params.id);
+    const [user, errorUser] = await UserService.getUserById(params.correo);
 
     if (errorUser) return respondError(req, res, 404, errorUser);
 
@@ -125,20 +125,26 @@ async function deleteUser(req, res) {
   }
 }
 
+/**
+ * generatest
+ */
 async function obtenerTest(req, res) {
   try {
-      const Test = await UserService.obtenerPrueba(req.email);
+      const Test = await UserService.obtenerPrueba(req.email, res);
       respondSuccess(req, res, 200, Test);
   } catch (error) {
       console.log(error);
   }
 }
 
+/**
+ * corrige test
+ */
 async function corregirPrueba(req, res) {
   try {
-    const respuestas = req.body;
+    // const respuestas = req.body;
     // crear un contador de intentos
-    const pruebaC = await UserService.corregirPrueba(respuestas);
+    const pruebaC = await UserService.corregirPrueba(req.email, req.body);
     respondSuccess(req, res, 200, pruebaC);
   } catch (error) {
     console.log(error);

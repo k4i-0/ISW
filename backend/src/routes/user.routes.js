@@ -18,15 +18,15 @@ const router = express.Router();
 router.use(authenticationMiddleware);
 
 // Define las rutas para los usuarios
-router.get("/", usuarioController.getUsers);
-router.post("/", authorizationMiddleware.isAdmin, usuarioController.createUser);
-router.get("/:id", usuarioController.getUserById);
+// router.get("/get", usuarioController.getUsers);
+// router.post("/", authorizationMiddleware.isAdmin, usuarioController.createUser);
+router.get("/:correo", usuarioController.getUserById);
 router.post(
   "/teorico/miprueba", authorizationMiddleware.isPostulante, 
   authorizationMiddleware.dioPruebaTeorica, 
   usuarioController.corregirPrueba,
 );
-router.get("/teorico/prueba", authorizationMiddleware.isPostulante, usuarioController.obtenerTest);
+router.get("/teorico/prueba", authorizationMiddleware.isPostulante, authorizationMiddleware.dioPruebaTeorica, usuarioController.obtenerTest);
 router.put(
   "/:id",
   authorizationMiddleware.isAdmin,

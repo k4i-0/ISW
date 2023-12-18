@@ -8,6 +8,7 @@ import Login from './routes/Login.jsx';
 import Prueba from './routes/PruebaExam.jsx';
 import Cprueba from './routes/CrearPrueba.jsx';
 import Apregunta from './routes/ActualizarPrueba.jsx'
+import Rprueba from './routes/PruebaPos.jsx'
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: '/actualizar-pregunta',
         element: <Apregunta/>
+      },
+      {
+        path: '/prueba',
+        element: <Rprueba/>
       }
     ],
   },
