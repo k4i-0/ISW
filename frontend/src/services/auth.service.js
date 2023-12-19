@@ -16,6 +16,10 @@ export const login = async ({ email, password }) => {
         'Authorization'
       ] = `Bearer ${data.data.accessToken}`;
       cookies.set('jwt-auth', data.data.accessToken, { path: '/' });
+    } else {
+      if (status == 400) {
+        return data;
+      }
     }
   } catch (error) {
     console.log(error);

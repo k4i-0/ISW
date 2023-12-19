@@ -13,8 +13,8 @@ async function envioPregunta(data){
 
 async function actualizarPregunta(data){
     const datos = JSON.stringify(data);
-    //const res = await axios.put('/examinador/question',datos);
-    console.log('funcion acti' + datos);
+    // const res = await axios.put('/examinador/question',datos);
+    // console.log('funcion acti' + datos);
     return res;
 }
 
@@ -25,9 +25,9 @@ export default function formularioEnvio(tipo){
     const {handleSubmit,register} = useForm();
     
     const onSubmit1 = (data) => {
-        console.log('Data:', data);
+        // console.log('Data:', data);
         actualizarPregunta(data).then(() => {
-            console.log(data);
+            // console.log(data);
         });
     };
     /*

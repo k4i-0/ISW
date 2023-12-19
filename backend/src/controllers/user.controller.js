@@ -12,6 +12,7 @@ const { handleError } = require("../utils/errorHandler");
  * @param {Object} req - Objeto de petición
  * @param {Object} res - Objeto de respuesta
  */
+/*
 async function getUsers(req, res) {
   try {
     const [usuarios, errorUsuarios] = await UserService.getUsers();
@@ -24,7 +25,7 @@ async function getUsers(req, res) {
     handleError(error, "user.controller -> getUsers");
     respondError(req, res, 400, error.message);
   }
-}
+}*/
 
 /**
  * Crea un nuevo usuario
@@ -65,7 +66,6 @@ async function getUserById(req, res) {
     const [user, errorUser] = await UserService.getUserById(params.correo);
 
     if (errorUser) return respondError(req, res, 404, errorUser);
-
     respondSuccess(req, res, 200, user);
   } catch (error) {
     handleError(error, "user.controller -> getUserById");
@@ -151,12 +151,25 @@ async function corregirPrueba(req, res) {
   }
 }
 
+/**
+ * Obtiene el usuario logueado
+*/
+async function Verme(req, res) {
+  try {
+    const user = await UserService.Verme2(req.email);
+    if (user === "") return respondError(req, res, 404, "sin datos");
+    respondSuccess(req, res, 200, user);
+  } catch (error) {
+    respondError(error);
+  }
+}
+
 module.exports = {
-  getUsers,
   createUser,
   getUserById,
   updateUser,
   deleteUser,
   obtenerTest,
   corregirPrueba,
+  Verme,
 };

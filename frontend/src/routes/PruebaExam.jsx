@@ -21,7 +21,7 @@ export default function Prueba() {
             setPruebas(data)
         });
     }, [])
-    console.log(pruebas);
+    // console.log(pruebas);
     
      /*
             {prueba.Preguntas.map(pregunta=>{pregunta.pregunta})}

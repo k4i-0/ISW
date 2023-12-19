@@ -62,6 +62,7 @@ async function createUser(user) {
  * @param {string} Id del usuario
  * @returns {Promise} Promesa con el objeto de usuario
  */
+/*
 async function getUserById(correo) {
   try {
     const user = await User.find({ email: correo })
@@ -73,7 +74,7 @@ async function getUserById(correo) {
   } catch (error) {
     handleError(error, "user.service -> getUserById");
   }
-}
+}*/
 
 /**
  * Actualiza un usuario por su id en la base de datos
@@ -203,11 +204,11 @@ async function corregirPrueba( correo, res) {
     }
 
     if (eva == res.length) {
-       await User.updateOne({ _id: userT[0]._id}, 
+       await User.updateOne({ _id: userT[0]._id }, 
         { estadoPostulacion: "Aprobado Teorico" });
         return ["Aprobado"];
     } else {
-      await User.updateOne({ _id: userT[0]._id}, 
+      await User.updateOne({ _id: userT[0]._id }, 
         { estadoPostulacion: "reprobado Teorico" });
         return "Reprobado";
     }
@@ -250,12 +251,27 @@ async function corregirPrueba( correo, res) {
   }
 }
 
+/**
+ * Obtiene un usuario por su id de la base de datos
+ * @param {string} Id del usuario
+ * @returns {Promise} Promesa con el objeto de usuario
+ */
+async function Verme2(correo) {
+  try {
+    const user = await User.findOne({ email: correo });
+    if (!user) return [null, "El usuario no existe"];
+    return user;
+  } catch (error) {
+    handleError(error, "user.service -> getUserById");
+  }
+}
+
 module.exports = {
   getUsers,
   createUser,
-  getUserById,
   updateUser,
   deleteUser,
   corregirPrueba,
   obtenerPrueba,
+  Verme2,
 };

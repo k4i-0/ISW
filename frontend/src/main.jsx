@@ -5,10 +5,11 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Root from './routes/Root.jsx';
 import ErrorPage from './routes/ErrorPage.jsx';
 import Login from './routes/Login.jsx';
-import Prueba from './routes/PruebaExam.jsx';
+// import Prueba from './routes/PruebaExam.jsx';
 import Cprueba from './routes/CrearPrueba.jsx';
 import Apregunta from './routes/ActualizarPrueba.jsx'
 import Rprueba from './routes/PruebaPos.jsx'
+import Vpruebas from './routes/Pruebas.jsx'
 
 const router = createBrowserRouter([
   {
@@ -20,9 +21,15 @@ const router = createBrowserRouter([
         path: '/',
         element: <App />,
       },
+      /*
       {
         path: '/vista-prueba',
         element: <Prueba/>,
+      },
+      */
+      {
+        path: '/vista-pruebas',
+        element: <Vpruebas/>,
       },
       {
         path:'/crear-prueba',

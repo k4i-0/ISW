@@ -1,41 +1,63 @@
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import '../index.css';
+import Dashboard from '../components/Dashboarf';
+import axios from '../services/root.service';
+import { useEffect, useState } from 'react';
+// import '../index.css';
 
 // <Button variant="contained2" onClick={() => navigate('/vista-prueba')}>Ver Prueba</Button>
 
-function App() {
-  const usuario = useAuth().user;
-  const navigate = useNavigate();
-  if(usuario.roles[0].name == 'Examinador'){
-    const navigate = useNavigate();
+async function getMe(){
+  const res = await axios.get('/users/me').finally();
+  return res.data.data;
+}
 
+
+function App() {
+  let aux = useAuth();
+  // console.log(aux.user);
+  if(aux.isAuthenticated == "false" || aux.user === ""){
     return(
-      <>
-       <div className="container2">
-          <h1>Bienviendido {usuario.roles[0].name}</h1>
-          <div className="buttons-container">
-            <Button variant="contained2" onClick={() => navigate('/crear-prueba')}>
-              Crear Prueba
-            </Button>
-          </div>
-        </div>
-      </>
+      <div>
+        <h1>Trabajando...</h1>
+        navigate('/login');
+      </div>
     );
-  }
-  if(usuario.roles[0].name == 'Postulante'){
+
+  }else{
+
+    const usuario = useAuth().user.roles[0].name;
+    // console.log(usuario);
+    if(usuario === "Examinador"){
+      return(
+        <>
+        <Dashboard name={usuario} boton1={"CREAR PREGUNTA"} ruta="/vista-pruebas"/>
+        </>
+      );
+    }
+
+    if(usuario === "Postulante"){
+
+      const [estado, setEstado] = useState([]);
+
+      useEffect(()=>{
+        getMe().then((data)=>{
+            setEstado(data);
+      });
+      },[]);
+      if (estado.estadoPostulacion == "Aprobado Teorico") {
         return(
           <>
-            <div className="container2">
-              <h2>Bienvenido {usuario.roles[0].name}</h2>
-              <div className="buttons-container">
-                <Button  variant="contained2" onClick={() =>navigate('/prueba')}>Rendir Prueba</Button>
-              </div>
-            </div>
-    
+          <Dashboard name={usuario} boton1={"PRUEBA RENDIDA"} ruta="/" estado={estado.estadoPostulacion}/>
+          </>
+        );  
+      }else {
+        return(
+          <>
+          <Dashboard name={usuario} boton1={"RENDIR PRUEBA"} ruta="/prueba" estado={estado.estadoPostulacion}/>
           </>
         );
+      }
+    }
   }
 }
 

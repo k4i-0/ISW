@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const navigate = useNavigate();
-
   if (localStorage.getItem('user')) {
+
     return (
       <>
         <h2>Ya estas logeado!</h2>
