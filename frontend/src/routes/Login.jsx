@@ -1,6 +1,6 @@
 import LoginForm from '../components/LoginForm';
 import { useNavigate } from 'react-router-dom';
-
+import '../index.css';
 function Login() {
   const navigate = useNavigate();
   if (localStorage.getItem('user')) {
@@ -14,8 +14,7 @@ function Login() {
   }
 
   return (
-    <div>
-      <img src="" alt="Icono"/>
+    <div className='centered'>
       <LoginForm />
     </div>
   );

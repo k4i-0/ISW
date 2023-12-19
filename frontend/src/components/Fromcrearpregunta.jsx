@@ -22,26 +22,26 @@ export default function Fromcrearpregunta(props){
     };
 
     return(
-        <div>
+        <div className='centeredForm'>
             <h2>Crear Preguntas</h2>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)}className='centeredForm'>
                 <label>Pregunta</label>
                 <br />
-                <input type="text" name='pregunta' {...register('pregunta')}/>
+                <input type="text" name='pregunta' {...register('pregunta')} className='centerinput'/>
                 <br />
-                <label>Alternativa</label>
+                <label className='centro'>Alternativa</label>
                 <br />
-                <input type="text" name="Alternativa[0]" {...register('Alternativa[0]')}/>
+                <input type="text" name="Alternativa[0]" {...register('Alternativa[0]')} className='centerinput'/>
                 <br />
-                <input type="text" name="Alternativa[1]" {...register('Alternativa[1]')} />
+                <input type="text" name="Alternativa[1]" {...register('Alternativa[1]')} className='centerinput'/>
                 <br />
-                <input type="text" name="Alternativa[2]" {...register('Alternativa[2]')} />
+                <input type="text" name="Alternativa[2]" {...register('Alternativa[2]')} className='centerinput'/>
                 <br />
-                <input type="text" name="Alternativa[3]" {...register('Alternativa[3]')} />
+                <input type="text" name="Alternativa[3]" {...register('Alternativa[3]')} className='centerinput'/>
                 <br />
                 <label>Respuesta</label>
                 <br />
-                <input type="text" name="respuesta" {...register('respuesta')} />
+                <input type="text" name="respuesta" {...register('respuesta')} className='centerinput'/>
                 <br />
                 <input type="submit" value="Enviar" />
             </form>

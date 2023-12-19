@@ -2,6 +2,7 @@ import axios from '../services/root.service';
 import cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import '../index.css';
 
 async function getTest(){
     const token = cookies.get('jwt-auth');
@@ -40,7 +41,7 @@ export default function VistaPreguntas(props){
         lista = <p>Sin datos</p>
     } else {
         lista = preguntas.map((pregunta )=>
-            <table>
+            <table className="centeredForm">
                 <tr key={pregunta.id} >
                     <td>
                     <h3>{pregunta.pregunta}</h3>
@@ -67,7 +68,7 @@ export default function VistaPreguntas(props){
     }
 
     return (
-        <div>
+        <div className='centeredForm'>
             <h1>Preguntas</h1>
             {lista}
         </div>

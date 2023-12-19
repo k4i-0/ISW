@@ -51,11 +51,13 @@ function App() {
           </>
         );  
       }else {
-        return(
-          <>
-          <Dashboard name={usuario} boton1={"RENDIR PRUEBA"} ruta="/prueba" estado={estado.estadoPostulacion}/>
-          </>
-        );
+        if (estado.estadoPostulacion == "reprobado Teorico") {
+          return(
+            <>
+            <Dashboard name={usuario} boton1={"RENDIR PRUEBA"} ruta="/prueba" estado={estado.estadoPostulacion}/>
+            </>
+          );
+        }
       }
     }
   }

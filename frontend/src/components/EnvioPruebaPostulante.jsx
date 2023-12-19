@@ -6,12 +6,10 @@ import { useEffect, useState } from 'react';
 
 async function getPrueba(){
     const token = cookies.get('jwt-auth');
-    const res = await axios.get('/users/teorico/prueba', token).then((response)=>{
-       //console.log(response);
-    });
-    // const data = res.data.data;
+    const res = await axios.get('/users/teorico/prueba', token).finally();
+    //const data = res.data.data;
     //console.log(res);
-    return res;
+    return res.data.data
 }
 
 async function setPrueba(data) {
@@ -44,6 +42,8 @@ export default function rendirPrueba() {
           setPreguntas(data);
         });
     }, []);
+    console.log(preguntas);
+    
     
     const onSubmit = (data) => {
         // console.log('Data:',data.Alternativa);
@@ -56,25 +56,26 @@ export default function rendirPrueba() {
 
     return(
         <>
-            <div>
+            <div className='centeredForm'>
                 <h1>Prueba</h1>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    {preguntas.map((pregunta,index) => (
-                    <div key={pregunta.id}>
-                        <label>{pregunta.pregunta}</label>
-                        {pregunta.Alternativa.map((alternativa) => (
-                        <div key={alternativa.id}>
-                            <label>{alternativa}</label>
-                            <input type="checkbox" name={`Alternativa[${index}]`}  value={alternativa}{...register(`Alternativa[${index}]`)}  />
-                        </div>
+                <form onSubmit={handleSubmit(onSubmit)} className='centeredForm'>
+                    <table>
+                        {preguntas.map((pregunta,index) => (
+                        <tr key={pregunta.id}>
+                            <h3>{pregunta.pregunta}</h3>
+                            {pregunta.Alternativa.map((alternativa) => (
+                            <p key={alternativa.id}>
+                                {alternativa}
+                                <input type="checkbox" name={`Alternativa[${index}]`}  value={alternativa}{...register(`Alternativa[${index}]`)}  />
+                            </p>
+                            ))}
+                        </tr>
                         ))}
-                        <br />
-                    </div>
-                    ))}
+                    </table>
                     <button type="submit">Enviar</button>
                 </form>
-                <button onClick={()=>navigate('/') }></button>
+                <button onClick={()=>navigate('/') }>VOLVER</button>
             </div>
         </>
-    )
+    );
 }

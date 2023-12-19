@@ -19,7 +19,7 @@ router.use(authenticationMiddleware);
 
 // Define las rutas para los usuarios
 // router.get("/get", usuarioController.getUsers);
-// router.post("/", authorizationMiddleware.isAdmin, usuarioController.createUser);
+router.post("/", authorizationMiddleware.isExaminador, usuarioController.createUser);
 // router.get("/:correo", usuarioController.getUserById);
 router.get("/me", usuarioController.Verme);
 router.post(

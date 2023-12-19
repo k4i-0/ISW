@@ -8,8 +8,8 @@ export default function Dashboard(props) {
     const navigate = useNavigate();
 
     return (
-        <div >
-            <table>
+        <div>
+            <table className="centeredForm" >
                 <tr>
                     <h1>Bienviendido {props.name}</h1>
                 </tr>

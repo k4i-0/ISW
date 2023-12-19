@@ -10,6 +10,7 @@ import Cprueba from './routes/CrearPrueba.jsx';
 import Apregunta from './routes/ActualizarPrueba.jsx'
 import Rprueba from './routes/PruebaPos.jsx'
 import Vpruebas from './routes/Pruebas.jsx'
+import './index.css';
 
 const router = createBrowserRouter([
   {
